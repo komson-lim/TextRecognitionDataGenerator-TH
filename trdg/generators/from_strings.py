@@ -45,7 +45,9 @@ class GeneratorFromStrings:
         output_bboxes=0,
         rtl=False,
         random_size=False,
-        size_range=100
+        size_range=100,
+        background_color="#ffffff",
+        background_transparecy=255,
     ):
         self.count = count
         self.strings = strings
@@ -89,6 +91,7 @@ class GeneratorFromStrings:
         self.image_mode = image_mode
         self.random_size = random_size
         self.size_range = size_range
+        self.background_color = background_color
 
     def __iter__(self):
         return self
@@ -134,6 +137,7 @@ class GeneratorFromStrings:
                 self.stroke_fill,
                 self.image_mode,
                 self.output_bboxes,
+                self.background_color,
             ),
             self.orig_strings[(self.generated_count - 1) % len(self.orig_strings)
                               ] if self.rtl else self.strings[(self.generated_count - 1) % len(self.strings)],

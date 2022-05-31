@@ -4,29 +4,41 @@ import os
 import random as rnd
 import numpy as np
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageColor
 
 
-def gaussian_noise(height, width):
+def gaussian_noise(height, width, background_color:str):
     """
         Create a background with Gaussian noise (to mimic paper)
     """
-
+    
+    # Change background_color HEX format to RGB format
+    background_color = ImageColor.getrgb(background_color)
+        
     # We create an all white image
-    image = np.ones((height, width)) * 255
-
-    # We add gaussian noise
-    cv2.randn(image, 235, 10)
+    #image = np.ones((height, width)) * 255
+    image = Image.new("RGB", (width, height), (0,0,0))
+    image = np.asarray(image)
+    
+    # # We add gaussian noise
+    cv2.randn(image, background_color, (10,10,10))
+    image[image < 0] = 0
+    image[image > 255] = 255
+    
+    image = np.array(image, dtype=np.uint8)
+    
+    #cv2.randn(image, 25, 110)
 
     return Image.fromarray(image).convert("RGBA")
+    
 
 
-def plain_white(height, width):
+def plain_white(height, width, background_color):
     """
         Create a plain white background
     """
 
-    return Image.new("L", (width, height), 255).convert("RGBA")
+    return Image.new("RGB", (width, height), background_color).convert("RGBA")
 
 
 def quasicrystal(height, width):

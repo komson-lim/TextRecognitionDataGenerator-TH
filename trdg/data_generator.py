@@ -56,6 +56,8 @@ class FakeTextDataGenerator(object):
         stroke_fill="#282828",
         image_mode="RGB",
         output_bboxes=0,
+        background_color="#ffffff",
+        background_transparecy=255
 
     ):
         image = None
@@ -170,11 +172,11 @@ class FakeTextDataGenerator(object):
         #############################
         if background_type == 0:
             background_img = background_generator.gaussian_noise(
-                background_height, background_width
+                background_height, background_width, background_color
             )
         elif background_type == 1:
             background_img = background_generator.plain_white(
-                background_height, background_width
+                background_height, background_width, background_color
             )
         elif background_type == 2:
             background_img = background_generator.quasicrystal(
