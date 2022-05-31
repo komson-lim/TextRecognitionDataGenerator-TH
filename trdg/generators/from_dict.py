@@ -38,17 +38,20 @@ class GeneratorFromDict:
         image_dir=os.path.join(
             "..", os.path.split(os.path.realpath(__file__))[0], "images"
         ),
-        stroke_width=0, 
+        stroke_width=0,
         stroke_fill="#282828",
         image_mode="RGB",
         output_bboxes=0,
+        random_size=False,
+        size_range=100
     ):
         self.count = count
         self.length = length
         self.allow_variable = allow_variable
         self.dict = load_dict(language)
         self.generator = GeneratorFromStrings(
-            create_strings_from_dict(self.length, self.allow_variable, 1000, self.dict),
+            create_strings_from_dict(
+                self.length, self.allow_variable, 1000, self.dict),
             count,
             fonts if len(fonts) else load_fonts(language),
             language,
@@ -76,6 +79,8 @@ class GeneratorFromDict:
             stroke_fill,
             image_mode,
             output_bboxes,
+            random_size,
+            size_range
         )
 
     def __iter__(self):
