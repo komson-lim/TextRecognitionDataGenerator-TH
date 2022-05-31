@@ -43,7 +43,9 @@ class GeneratorFromDict:
         image_mode="RGB",
         output_bboxes=0,
         random_size=False,
-        size_range=100
+        size_range=100,
+        background_color="#ffffff",
+        random_background_color = False,
     ):
         self.count = count
         self.length = length
@@ -80,7 +82,9 @@ class GeneratorFromDict:
             image_mode,
             output_bboxes,
             random_size,
-            size_range
+            size_range,
+            background_color,
+            random_background_color,
         )
 
     def __iter__(self):

@@ -43,11 +43,11 @@ class GeneratorFromStrings:
         stroke_fill="#282828",
         image_mode="RGB",
         output_bboxes=0,
-        rtl=False,
         random_size=False,
         size_range=100,
         background_color="#ffffff",
         random_background_color = False,
+        rtl=False,
     ):
         self.count = count
         self.strings = strings
