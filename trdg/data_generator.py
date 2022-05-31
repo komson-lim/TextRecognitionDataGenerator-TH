@@ -50,10 +50,13 @@ class FakeTextDataGenerator(object):
         output_mask,
         word_split,
         image_dir,
-        stroke_width=0, 
+        random_size,
+        size_range,
+        stroke_width=0,
         stroke_fill="#282828",
-        image_mode="RGB", 
+        image_mode="RGB",
         output_bboxes=0,
+
     ):
         image = None
 
@@ -69,6 +72,8 @@ class FakeTextDataGenerator(object):
                 raise ValueError("Vertical handwritten text is unavailable")
             image, mask = handwritten_text_generator.generate(text, text_color)
         else:
+            if random_size:
+                size = rnd.randrange(size, size_range)
             image, mask = computer_text_generator.generate(
                 text,
                 font,
@@ -79,7 +84,7 @@ class FakeTextDataGenerator(object):
                 character_spacing,
                 fit,
                 word_split,
-                stroke_width, 
+                stroke_width,
                 stroke_fill,
             )
         random_angle = rnd.randint(0 - skewing_angle, skewing_angle)
@@ -102,22 +107,28 @@ class FakeTextDataGenerator(object):
             distorted_img, distorted_mask = distorsion_generator.sin(
                 rotated_img,
                 rotated_mask,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2),
+                vertical=(distorsion_orientation ==
+                          0 or distorsion_orientation == 2),
+                horizontal=(distorsion_orientation ==
+                            1 or distorsion_orientation == 2),
             )
         elif distorsion_type == 2:
             distorted_img, distorted_mask = distorsion_generator.cos(
                 rotated_img,
                 rotated_mask,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2),
+                vertical=(distorsion_orientation ==
+                          0 or distorsion_orientation == 2),
+                horizontal=(distorsion_orientation ==
+                            1 or distorsion_orientation == 2),
             )
         else:
             distorted_img, distorted_mask = distorsion_generator.random(
                 rotated_img,
                 rotated_mask,
-                vertical=(distorsion_orientation == 0 or distorsion_orientation == 2),
-                horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2),
+                vertical=(distorsion_orientation ==
+                          0 or distorsion_orientation == 2),
+                horizontal=(distorsion_orientation ==
+                            1 or distorsion_orientation == 2),
             )
 
         ##################################
@@ -133,7 +144,8 @@ class FakeTextDataGenerator(object):
             resized_img = distorted_img.resize(
                 (new_width, size - vertical_margin), Image.ANTIALIAS
             )
-            resized_mask = distorted_mask.resize((new_width, size - vertical_margin), Image.NEAREST)
+            resized_mask = distorted_mask.resize(
+                (new_width, size - vertical_margin), Image.NEAREST)
             background_width = width if width > 0 else new_width + horizontal_margin
             background_height = size
         # Vertical text
@@ -180,8 +192,9 @@ class FakeTextDataGenerator(object):
         # Comparing average pixel value of text and background image #
         ##############################################################
         try:
-            resized_img_st = ImageStat.Stat(resized_img, resized_mask.split()[2])
-            background_img_st = ImageStat.Stat(background_img) 
+            resized_img_st = ImageStat.Stat(
+                resized_img, resized_mask.split()[2])
+            background_img_st = ImageStat.Stat(background_img)
 
             resized_img_px_mean = sum(resized_img_st.mean[:2]) / 3
             background_img_px_mean = sum(background_img_st.mean) / 3
@@ -203,7 +216,8 @@ class FakeTextDataGenerator(object):
         new_text_width, _ = resized_img.size
 
         if alignment == 0 or width == -1:
-            background_img.paste(resized_img, (margin_left, margin_top), resized_img)
+            background_img.paste(
+                resized_img, (margin_left, margin_top), resized_img)
             background_mask.paste(resized_mask, (margin_left, margin_top))
         elif alignment == 1:
             background_img.paste(
@@ -225,13 +239,13 @@ class FakeTextDataGenerator(object):
                 resized_mask,
                 (background_width - new_text_width - margin_right, margin_top),
             )
-                    
+
         ############################################
         # Change image mode (RGB, grayscale, etc.) #
         ############################################
-        
+
         background_img = background_img.convert(image_mode)
-        background_mask = background_mask.convert(image_mode) 
+        background_mask = background_mask.convert(image_mode)
 
         #######################
         # Apply gaussian blur #
@@ -242,7 +256,7 @@ class FakeTextDataGenerator(object):
         )
         final_image = background_img.filter(gaussian_filter)
         final_mask = background_mask.filter(gaussian_filter)
-        
+
         #####################################
         # Generate name for resulting image #
         #####################################
@@ -264,7 +278,6 @@ class FakeTextDataGenerator(object):
         box_name = "{}_boxes.txt".format(name)
         tess_box_name = "{}.box".format(name)
 
-
         # Save the image
         if out_dir is not None:
             final_image.save(os.path.join(out_dir, image_name))
@@ -279,7 +292,8 @@ class FakeTextDataGenerator(object):
                 bboxes = mask_to_bboxes(final_mask, tess=True)
                 with open(os.path.join(out_dir, tess_box_name), "w") as f:
                     for bbox, char in zip(bboxes, text):
-                        f.write(" ".join([char] + [str(v) for v in bbox] + ['0']) + "\n")
+                        f.write(" ".join([char] + [str(v)
+                                for v in bbox] + ['0']) + "\n")
         else:
             if output_mask == 1:
                 return final_image, final_mask
