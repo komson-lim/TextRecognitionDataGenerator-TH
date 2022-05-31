@@ -57,7 +57,7 @@ class FakeTextDataGenerator(object):
         image_mode="RGB",
         output_bboxes=0,
         background_color="#ffffff",
-        background_transparecy=255
+        random_background_color=False,
 
     ):
         image = None
@@ -170,6 +170,9 @@ class FakeTextDataGenerator(object):
         #############################
         # Generate background image #
         #############################
+        if random_background_color:
+            r = lambda: rnd.randint(0,255)
+            background_color ='#%02X%02X%02X' % (r(),r(),r())
         if background_type == 0:
             background_img = background_generator.gaussian_noise(
                 background_height, background_width, background_color
