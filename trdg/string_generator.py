@@ -53,7 +53,8 @@ def create_strings_from_wikipedia(minimum_length, count, lang):
 
         page_url = "https://{}.wikipedia.org/wiki/Special:Random".format(lang)
         try:
-            page = requests.get(page_url, timeout=3.0)  # take into account timeouts
+            # take into account timeouts
+            page = requests.get(page_url, timeout=3.0)
         except requests.exceptions.Timeout:
             continue
 
@@ -66,8 +67,8 @@ def create_strings_from_wikipedia(minimum_length, count, lang):
         lines = list(
             filter(
                 lambda s: len(s.split(" ")) > minimum_length
-                          and not "Wikipedia" in s
-                          and not "wikipedia" in s,
+                and not "Wikipedia" in s
+                and not "wikipedia" in s,
                 [
                     " ".join(re.findall(r"[\w']+", s.strip()))[0:200]
                     for s in soup.get_text().splitlines()
@@ -108,17 +109,25 @@ def create_strings_randomly(length, allow_variable, count, let, num, sym, lang):
             )   # unicode range for Katakana
             pool += "".join(
                 [chr(i) for i in range(65280, 65519)]
-            )   # unicode range for Full-width roman characters and half-width katakana 
+            )   # unicode range for Full-width roman characters and half-width katakana
             pool += "".join(
                 [chr(i) for i in range(19968, 40908)]
             )   # unicode range for common and uncommon kanji
             # https://stackoverflow.com/questions/19899554/unicode-range-for-japanese
+        elif lang == 'th':
+            pool += string.ascii_letters
+            pool += "".join(
+                [chr(i) for i in range(3585, 3643)]
+            )
+            pool += "".join(
+                [chr(i) for i in range(3647, 3643)]
+            )
         else:
             pool += string.ascii_letters
     if num:
         pool += "0123456789"
     if sym:
-        pool += "!\"#$%&'()*+,-./:;?@[\\]^_`{|}~"
+        pool += "!\"#$%&'()*+,-./:;?@[\\]^_`{|}~ "
 
     if lang == "cn":
         min_seq_len = 1
@@ -126,6 +135,9 @@ def create_strings_randomly(length, allow_variable, count, let, num, sym, lang):
     elif lang == "ja":
         min_seq_len = 1
         max_seq_len = 2
+    elif lang == 'th':
+        min_seq_len = 2
+        max_seq_len = 10
     else:
         min_seq_len = 2
         max_seq_len = 10
@@ -135,7 +147,8 @@ def create_strings_randomly(length, allow_variable, count, let, num, sym, lang):
         current_string = ""
         for _ in range(0, rnd.randint(1, length) if allow_variable else length):
             seq_len = rnd.randint(min_seq_len, max_seq_len)
-            current_string += "".join([rnd.choice(pool) for _ in range(seq_len)])
+            current_string += "".join([rnd.choice(pool)
+                                      for _ in range(seq_len)])
             current_string += " "
         strings.append(current_string[:-1])
     return strings

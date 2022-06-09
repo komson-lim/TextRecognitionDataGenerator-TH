@@ -45,6 +45,10 @@ class GeneratorFromRandom:
             stroke_fill="#282828",
             image_mode="RGB",
             output_bboxes=0,
+            random_size=False,
+            size_range=100,
+            background_color="#ffffff",
+            random_background_color=False,
     ):
         self.generated_count = 0
         self.count = count
@@ -58,7 +62,7 @@ class GeneratorFromRandom:
             create_strings_randomly(
                 self.length,
                 self.allow_variable,
-                1000,
+                1000000,
                 self.use_letters,
                 self.use_numbers,
                 self.use_symbols,
@@ -91,6 +95,10 @@ class GeneratorFromRandom:
             stroke_fill,
             image_mode,
             output_bboxes,
+            random_size,
+            size_range,
+            background_color,
+            random_background_color,
         )
 
     def __iter__(self):
@@ -107,7 +115,7 @@ class GeneratorFromRandom:
             self.generator.strings = create_strings_randomly(
                 self.length,
                 self.allow_variable,
-                1000,
+                1000000,
                 self.use_letters,
                 self.use_numbers,
                 self.use_symbols,
