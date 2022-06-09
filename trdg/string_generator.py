@@ -120,7 +120,7 @@ def create_strings_randomly(length, allow_variable, count, let, num, sym, lang):
                 [chr(i) for i in range(3585, 3643)]
             )
             pool += "".join(
-                [chr(i) for i in range(3647, 3643)]
+                [chr(i) for i in range(3647, 3675)]
             )
         else:
             pool += string.ascii_letters
