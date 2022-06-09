@@ -101,3 +101,15 @@ ENV/
 .mypy_cache/
 
 .vscode/*
+
+
+## Local configuration
+# datasets
+train_images
+test_images
+
+# fonts
+trdg/fonts/th
+
+# notebook file
+trdg_data_gen.ipynb
