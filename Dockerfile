@@ -5,8 +5,11 @@ WORKDIR /app
 
 # Install dependencies
 RUN apt-get update \
- && apt-get upgrade -y \
- && apt-get install -y \
+    && apt-get upgrade -y \
+    && apt-get install -y \
+    && apt-get install -y software-properties-common \
+    && add-apt-repository -y ppa:deadsnakes \
+    && apt-get install -y python3.8-venv \
     git \
     locales \
     python3-pip \
@@ -21,7 +24,8 @@ RUN apt-get update \
     libraqm-dev \
     virtualenv \
     libgl1-mesa-glx \
- && rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set the locale
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -30,17 +34,14 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN virtualenv --python python3 /env
-ENV PATH="/env/bin:$PATH"
+RUN python3.8 -m venv /venv
+ENV PATH=/venv/bin:$PATH
 COPY . /app/
 
 RUN pip install --upgrade pip
 RUN pip install codecov
 
-RUN git clone https://github.com/python-pillow/Pillow.git \
- && cd Pillow \
- && git checkout 7.0.x \
- && python setup.py build_ext --enable-freetype install
+RUN pip install pillow==9.1.1
 
 RUN python setup.py install
 RUN pip install -r requirements.txt
