@@ -63,8 +63,8 @@ def _generate_horizontal_text(
         text_width += character_spacing * (len(text) - 1)
 
     text_height = max([image_font.getsize(p)[1] for p in splitted_text])
-    text_offset_x = max([image_font.getoffset(p)[0] for p in splitted_text])
-    text_offset_y = max([image_font.getoffset(p)[1] for p in splitted_text])
+    text_offset_x = min([image_font.getoffset(p)[0] for p in splitted_text])
+    text_offset_y = min([image_font.getoffset(p)[1] for p in splitted_text])
     txt_img = Image.new("RGBA", (text_width - min(0, text_offset_x),
                         text_height - min(0, text_offset_y)), (0, 0, 0, 0))
     txt_mask = Image.new("RGB", (text_width - min(0, text_offset_x),
